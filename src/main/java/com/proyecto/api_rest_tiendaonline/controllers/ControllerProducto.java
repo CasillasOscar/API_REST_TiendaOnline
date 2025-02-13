@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 
@@ -78,6 +79,38 @@ public class ControllerProducto {
         }
     }
 
+    @PutMapping("/{name}")
+    public ResponseEntity<?> updateProducto(@Valid @RequestBody Producto producto){
 
+        Optional<Producto> productUpdate = serviceProducto.updateProducto(producto);
 
+        if(productUpdate.isPresent()){
+
+            return ResponseEntity.of(productUpdate);
+
+        } else {
+
+            return ResponseEntity.badRequest().body("No se ha podido actualizar el producto");
+
+        }
+    }
+
+    @Transactional
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deleteProducto(@PathVariable Integer id){
+
+        Boolean eliminado = serviceProducto.deleteProductoById(id);
+
+        if(eliminado){
+
+            return ResponseEntity.ok("El producto con id " + id + " ha sido eliminado correctamente");
+
+        } else {
+
+            return ResponseEntity.badRequest().body("El producto con id " + id + " no ha podido ser eliminado");
+
+        }
+
+    }
+    
 }
