@@ -2,6 +2,7 @@ package com.proyecto.api_rest_tiendaonline.modelos;
 
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
@@ -16,21 +17,24 @@ public class Producto {
     @Column(name = "id", nullable = false)
     private Integer id;
 
-    @Size(max = 100)
+    @Size(min=1, max = 100)
     @NotNull
     @Column(name = "nombre", nullable = false, length = 100)
     private String nombre;
 
     @Lob
     @Column(name = "descripcion")
+    @NotNull
     private String descripcion;
 
     @NotNull
+    @NotEmpty
     @Column(name = "precio", nullable = false, precision = 10, scale = 2)
     private BigDecimal precio;
 
 
     @NotNull
+    @NotEmpty
     @Column(name = "stock", nullable = false)
     private Integer stock;
 

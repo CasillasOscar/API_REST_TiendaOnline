@@ -1,5 +1,6 @@
 package com.proyecto.api_rest_tiendaonline.modelos;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
@@ -26,9 +27,9 @@ public class Historial {
     @JoinColumn(name = "cliente_id", nullable = false)
     private Cliente cliente;
 
-    @JsonProperty("cliente_id")
-    public Integer getIdCliente() {
-        return cliente != null ? cliente.getId() : null;
+    @JsonProperty("nickname_cliente")
+    public String getNicknameCliente() {
+        return cliente != null ? cliente.getNickname() : null;
     }
 
     @NotNull
@@ -37,9 +38,9 @@ public class Historial {
     @JoinColumn(name = "producto_id", nullable = false)
     private Producto producto;
 
-    @JsonProperty("producto_id")
-    public Integer getIdProducto() {
-        return producto != null ? producto.getId() : null;
+    @JsonProperty("nombre_producto")
+    public String getNombreProducto() {
+        return producto != null ? producto.getNombre() : null;
     }
 
     @NotNull
