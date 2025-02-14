@@ -6,6 +6,7 @@ import com.proyecto.api_rest_tiendaonline.modelos.RepositoryProducto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
@@ -53,9 +54,18 @@ public class ServiceProducto implements ProductoServiceInterface {
     @Override
     public Optional<Producto> addProducto(Producto producto) {
 
+        //Validacion de producto con nombre unico
         Optional<Producto> productExist = repositoryProducto.getProductoByNombre(producto.getNombre());
 
         if(productExist.isEmpty()){
+
+            if(producto.getPrecio().compareTo(BigDecimal.valueOf(10)) == -1){
+                producto.setDescripcion(producto.getDescripcion().concat(" producto en oferta"));
+            }
+
+            if(producto.getPrecio().compareTo(BigDecimal.valueOf(200)) == 1){
+                producto.setDescripcion(producto.getDescripcion().concat(" producto de calidad"));
+            }
 
             repositoryProducto.save(producto);
             return Optional.of(producto);

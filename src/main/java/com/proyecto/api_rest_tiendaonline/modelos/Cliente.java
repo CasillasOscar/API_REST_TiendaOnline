@@ -1,6 +1,7 @@
 package com.proyecto.api_rest_tiendaonline.modelos;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
@@ -37,12 +38,14 @@ public class Cliente {
     @Column(name = "password", nullable = false)
     private String password;
 
-    @Size(max = 9)
-    @Pattern(regexp = "\\d{9}", message = "Tienen que ser 9 digitos")
+    @Size(min = 9, max = 9)
+    @Pattern(regexp = "^(6|9)\\d{8}$", message = "Tienen que ser 9 digitosn que empiecen por 6 o 9")
+    @NotNull
     @Column(name = "telefono", length = 15)
     private String telefono;
 
     @Size(min = 1, max = 100,  message = "Minimo 1 letra y maximo 100")
+    @NotNull
     @Column(name = "domicilio", length = 100)
     private String domicilio;
 

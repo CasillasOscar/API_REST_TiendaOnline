@@ -2,9 +2,7 @@ package com.proyecto.api_rest_tiendaonline.modelos;
 
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.*;
 
 
 import java.math.BigDecimal;
@@ -20,6 +18,7 @@ public class Producto {
     @Size(min=1, max = 100)
     @NotNull
     @Column(name = "nombre", nullable = false, length = 100)
+    @Pattern(regexp = "^[a-zA-Z0-9]+$", message = "Solo son admitidas letras y numeros")
     private String nombre;
 
     @Lob
@@ -28,13 +27,12 @@ public class Producto {
     private String descripcion;
 
     @NotNull
-    @NotEmpty
+    @PositiveOrZero
     @Column(name = "precio", nullable = false, precision = 10, scale = 2)
     private BigDecimal precio;
 
 
     @NotNull
-    @NotEmpty
     @Column(name = "stock", nullable = false)
     private Integer stock;
 
