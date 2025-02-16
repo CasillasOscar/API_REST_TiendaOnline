@@ -4,8 +4,8 @@ import jakarta.validation.constraints.Pattern;
 
 public class UsuarioLogDTO {
 
-    String nickname;
-    String password;
+    private String nickname;
+    private String password;
 
     public UsuarioLogDTO(String nickname, String password) {
         this.nickname = nickname;

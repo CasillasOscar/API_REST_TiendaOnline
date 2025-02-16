@@ -2,8 +2,8 @@ package com.proyecto.api_rest_tiendaonline.modelos;
 
 public class CompraProductoDTO {
 
-    String nombre;
-    Integer cantidad;
+    private String nombre;
+    private Integer cantidad;
 
     public CompraProductoDTO(String nombre, Integer cantidad) {
         this.nombre = nombre;

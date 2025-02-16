@@ -2,9 +2,9 @@ package com.proyecto.api_rest_tiendaonline.modelos;
 
 public class DevolucionProductoDTO {
 
-    String nombre;
-    Integer cantidad;
-    String descripcion;
+    private String nombre;
+    private Integer cantidad;
+    private String descripcion;
 
     public DevolucionProductoDTO(String nombre, Integer cantidad, String descripcion) {
         this.nombre = nombre;
