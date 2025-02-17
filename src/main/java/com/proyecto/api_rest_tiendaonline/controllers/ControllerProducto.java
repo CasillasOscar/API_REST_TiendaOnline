@@ -1,5 +1,6 @@
 package com.proyecto.api_rest_tiendaonline.controllers;
 
+import com.proyecto.api_rest_tiendaonline.exceptions.CustomException;
 import com.proyecto.api_rest_tiendaonline.modelos.Producto;
 import com.proyecto.api_rest_tiendaonline.services.ServiceProducto;
 import jakarta.validation.Valid;
@@ -33,71 +34,37 @@ public class ControllerProducto {
 
     @GetMapping("/{id}")
     @Cacheable
-    public ResponseEntity<?> getProductById(@PathVariable Integer id) {
+    public ResponseEntity<?> getProductById(@PathVariable Integer id) throws CustomException {
 
-        Optional<Producto> productExist = serviceProducto.getProductById(id);
+            return ResponseEntity.ok(serviceProducto.getProductById(id));
 
-        if (productExist.isPresent()) {
-
-            return ResponseEntity.ok(productExist.get());
-
-        } else {
-
-            return ResponseEntity.badRequest().body("No se ha encontrado un producto con dicho id");
-        }
     }
 
     @GetMapping("/name/{name}")
     @Cacheable
-    public ResponseEntity<?> getProductByName(@PathVariable String name) {
+    public ResponseEntity<?> getProductByName(@PathVariable String name) throws CustomException {
 
-        Optional<Producto> productExist = serviceProducto.getProductByName(name);
-
-        if (productExist.isPresent()) {
-
-            return ResponseEntity.ok(productExist);
-
-        } else {
-
-            return ResponseEntity.badRequest().body("No se ha encontrado un producto con ese nombre");
-        }
+            return ResponseEntity.ok(serviceProducto.getProductByName(name));
 
     }
 
     @PostMapping
-    public ResponseEntity<?> addProducto(@Valid @RequestBody Producto producto){
+    public ResponseEntity<?> addProducto(@Valid @RequestBody Producto producto) throws CustomException{
 
-        Optional<Producto> productoCreate = serviceProducto.addProducto(producto);
+            return ResponseEntity.ok(serviceProducto.addProducto(producto));
 
-        if(productoCreate.isPresent()){
-
-            return ResponseEntity.ok(productoCreate);
-
-        } else {
-
-            return ResponseEntity.badRequest().body("No se ha podido crear el producto en la base de datos");
-        }
     }
 
     @PutMapping("/{name}")
-    public ResponseEntity<?> updateProducto(@Valid @RequestBody Producto producto){
+    public ResponseEntity<?> updateProducto(@Valid @RequestBody Producto producto) throws CustomException{
 
-        Optional<Producto> productUpdate = serviceProducto.updateProducto(producto);
+            return ResponseEntity.of(serviceProducto.updateProducto(producto));
 
-        if(productUpdate.isPresent()){
-
-            return ResponseEntity.of(productUpdate);
-
-        } else {
-
-            return ResponseEntity.badRequest().body("No se ha podido actualizar el producto");
-
-        }
     }
 
     @Transactional
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> deleteProducto(@PathVariable Integer id){
+    public ResponseEntity<?> deleteProducto(@PathVariable Integer id) throws CustomException{
 
         Boolean eliminado = serviceProducto.deleteProductoById(id);
 

@@ -1,5 +1,6 @@
 package com.proyecto.api_rest_tiendaonline.services;
 
+import com.proyecto.api_rest_tiendaonline.exceptions.CustomException;
 import com.proyecto.api_rest_tiendaonline.modelos.Producto;
 
 import com.proyecto.api_rest_tiendaonline.modelos.RepositoryProducto;
@@ -23,36 +24,42 @@ public class ServiceProducto implements ProductoServiceInterface {
     }
 
     @Override
-    public Optional<Producto> getProductById(Integer id) {
+    public Optional<Producto> getProductById(Integer id)  throws CustomException {
 
-        try{
+        Optional<Producto> productExist = repositoryProducto.getProductoById(id);
 
-            return repositoryProducto.getProductoById(id);
+        if(productExist.isPresent()){
 
-        } catch (NoSuchElementException e) {
+            return productExist;
 
-            return Optional.empty();
+        } else {
+
+            throw new CustomException("El producto con id " + id + " no existe");
 
         }
+
     }
 
     @Override
-    public Optional<Producto> getProductByName(String name) {
+    public Optional<Producto> getProductByName(String name)  throws CustomException{
 
-        try{
+        Optional<Producto> productExist = repositoryProducto.getProductoByNombre(name);
 
-            return repositoryProducto.getProductoByNombre(name);
+        if(productExist.isPresent()){
 
-        } catch (NoSuchElementException e) {
+            return productExist;
 
-            return Optional.empty();
+        } else {
+
+            throw new CustomException("El producto " + name + " no existe");
 
         }
+
     }
 
 
     @Override
-    public Optional<Producto> addProducto(Producto producto) {
+    public Optional<Producto> addProducto(Producto producto) throws CustomException {
 
         //Validacion de producto con nombre unico
         Optional<Producto> productExist = repositoryProducto.getProductoByNombre(producto.getNombre());
@@ -72,16 +79,14 @@ public class ServiceProducto implements ProductoServiceInterface {
 
         } else {
 
-            return Optional.empty();
+            throw new CustomException("El producto " + producto.getNombre() + " ya existe");
 
         }
 
     }
 
     @Override
-    public Optional<Producto> updateProducto(Producto producto) {
-
-        try{
+    public Optional<Producto> updateProducto(Producto producto)  throws CustomException{
 
             Optional<Producto> productExist = repositoryProducto.getProductoByNombre(producto.getNombre());
 
@@ -95,42 +100,27 @@ public class ServiceProducto implements ProductoServiceInterface {
 
             } else {
 
-                return Optional.empty();
+                throw new CustomException("El producto " + producto.getNombre() + " no existe");
 
             }
-
-        } catch (NoSuchElementException e) {
-
-            return Optional.empty();
-
-        }
-
     }
 
 
     @Override
-    public Boolean deleteProductoById(Integer id) {
-
-        try{
+    public Boolean deleteProductoById(Integer id)  throws CustomException{
 
             Optional<Producto> productExist = repositoryProducto.getProductoById(id);
 
             if(productExist.isPresent()){
 
-
                     repositoryProducto.delete(productExist.get());
                     return true;
 
-
             } else {
 
-                return false;
+                throw new CustomException("El producto con id " + id + " no existe");
 
             }
-        } catch (NoSuchElementException e) {
 
-            return false;
-
-        }
     }
 }
