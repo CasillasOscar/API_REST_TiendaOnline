@@ -34,41 +34,19 @@ public class ControllerHistorial {
     }
 
     @GetMapping("/cliente/{nickname}")
-    public ResponseEntity<?> getByNickname_Cliente(@PathVariable String nickname){
+    public ResponseEntity<?> getByNickname_Cliente(@PathVariable String nickname) throws CustomException{
 
-        Optional<List<Historial>> listOfClient = serviceHistorial.getByNickname_Cliente(nickname);
-
-        if(listOfClient.isPresent()){
-
-            return ResponseEntity.ok(listOfClient);
-
-        } else {
-
-            return ResponseEntity.badRequest().body("No se ha podido sacar el historial del cliente con nickname " + nickname);
-
-        }
-
+            return ResponseEntity.ok(serviceHistorial.getByNickname_Cliente(nickname));
     }
 
     @GetMapping("/producto/{name}")
-    public ResponseEntity<?> getByNombre_Producto(@PathVariable String name){
+    public ResponseEntity<?> getByNombre_Producto(@PathVariable String name) throws CustomException{
 
-        Optional<List<Historial>> listOfClient = serviceHistorial.getByNombre_Producto(name);
-
-        if(listOfClient.isPresent()){
-
-            return ResponseEntity.ok(listOfClient);
-
-        } else {
-
-            return ResponseEntity.badRequest().body("No se ha podido sacar el historial del producto " + name);
-
-        }
-
+            return ResponseEntity.ok(serviceHistorial.getByNombre_Producto(name));
     }
 
     @GetMapping("/fecha/{date}")
-    public ResponseEntity<?> getByFecha(@PathVariable String date){
+    public ResponseEntity<?> getByFecha(@PathVariable String date) throws CustomException{
 
         String arrayDate[] = date.split("-");
 
@@ -116,42 +94,25 @@ public class ControllerHistorial {
     }
 
     @GetMapping("/tipo/{tipo}")
-    public ResponseEntity<?> getByTipo(@PathVariable String tipo){
+    public ResponseEntity<?> getByTipo(@PathVariable String tipo) throws CustomException{
 
-        Optional<List<Historial>> list = serviceHistorial.getByTipo(tipo);
-
-        if(list.isPresent() || list.get().size() > 0){
-
-            return ResponseEntity.ok(list);
-
-        } else {
-
-            return ResponseEntity.badRequest().body("No se ha podido sacar el historial del tipo: " + tipo);
-
-        }
+            return ResponseEntity.ok(serviceHistorial.getByTipo(tipo));
 
     }
 
 
     @PostMapping("/comprar/{nickname}")
     public ResponseEntity<?> comprar_producto(@PathVariable String nickname, @RequestBody CompraProductoDTO compraProductoDTO) throws CustomException {
+
             return ResponseEntity.of(serviceHistorial.comprar_producto(nickname, compraProductoDTO));
 
     }
 
     @PostMapping("/devolucion/{nickname}")
-    public ResponseEntity<?> devolver_producto(@PathVariable String nickname, @RequestBody DevolucionProductoDTO devolucionProductoDTO){
+    public ResponseEntity<?> devolver_producto(@PathVariable String nickname, @RequestBody DevolucionProductoDTO devolucionProductoDTO) throws CustomException{
 
-        Optional<Historial> newHistorial = serviceHistorial.devolver_producto(nickname, devolucionProductoDTO);
+            return ResponseEntity.of(serviceHistorial.devolver_producto(nickname, devolucionProductoDTO));
 
-        if(newHistorial.isPresent()){
-
-            return ResponseEntity.of(newHistorial);
-
-        } else {
-
-            return ResponseEntity.badRequest().body("No se ha podido devolver el producto");
-        }
     }
 
     //No se puede eliminar o editar un historial (logica de negocio)

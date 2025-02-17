@@ -30,68 +30,97 @@ public class ServiceHistorial implements HistorialServiceInterface{
     }
 
     @Override
-    public Optional<List<Historial>> getByNickname_Cliente(String nickname) {
+    public Optional<List<Historial>> getByNickname_Cliente(String nickname) throws CustomException {
 
         Optional<Cliente> clienteExist = repositoryCliente.getClienteByNickname(nickname);
 
         if(clienteExist.isPresent()){
 
-            return Optional.of(repositoryHistorial.getHistorialsByCliente_Id(clienteExist.get().getId()));
+            List<Historial> listExist = repositoryHistorial.getHistorialsByCliente_Id(clienteExist.get().getId());
+
+            if(!listExist.isEmpty()){
+
+                return Optional.of(listExist);
+
+            } else {
+
+                throw new CustomException("No hay historial del cliente " + nickname);
+
+            }
 
         } else {
 
-            return Optional.empty();
+            throw new CustomException("No existe el cliente con nickname " + nickname);
         }
 
     }
 
     @Override
-    public Optional<List<Historial>> getByNombre_Producto(String nombre_producto) {
+    public Optional<List<Historial>> getByNombre_Producto(String nombre_producto) throws CustomException {
 
-        Optional<Producto> productoExist = repositoryProducto.getProductoByNombre(nombre_producto);
+        Optional<Producto> productExist = repositoryProducto.getProductoByNombre(nombre_producto);
 
-        if(productoExist.isPresent()){
+        if(productExist.isPresent()){
 
-            return Optional.of(repositoryHistorial.getHistorialsByProducto_Id(productoExist.get().getId()));
+            List<Historial> listExist = repositoryHistorial.getHistorialsByProducto_Id(productExist.get().getId());
+
+            if(!listExist.isEmpty()){
+
+                return Optional.of(listExist);
+
+            } else {
+
+                throw new CustomException("No hay historial del producto " + nombre_producto);
+
+            }
 
         } else {
 
-            return Optional.empty();
+            throw new CustomException("No existe el producto " + nombre_producto);
         }
-
     }
 
     @Override
-    public Optional<List<Historial>> getByFecha(LocalDate date) {
+    public Optional<List<Historial>> getByFecha(LocalDate date) throws CustomException {
 
         Optional<List<Historial>> list = repositoryHistorial.getHistorialsByFechaCompra(date);
 
-        if(list.get().size() > 0){
+        if(!list.get().isEmpty()){
 
             return Optional.of(list.get());
 
         } else {
 
-            return Optional.empty();
+            throw new CustomException("No existe historial para la fecha " + date);
 
         }
 
     }
 
     @Override
-    public Optional<List<Historial>> getByTipo(String tipo) {
+    public Optional<List<Historial>> getByTipo(String tipo) throws CustomException {
 
         if(
                 tipo.equalsIgnoreCase("compra") ||
                 tipo.equalsIgnoreCase("devolucion")
         ){
 
-            return Optional.of(repositoryHistorial.getHistorialsByTipo(tipo));
+            List<Historial> list = repositoryHistorial.getHistorialsByTipo(tipo);
+
+            if(!list.isEmpty()){
+
+                return Optional.of(list);
+
+            } else {
+
+                throw new CustomException("No existe historial para el tipo " + tipo);
+
+            }
 
 
         } else {
 
-            return Optional.empty();
+            throw new CustomException("El tipo " + tipo + " no existe");
         }
 
     }
@@ -147,7 +176,7 @@ public class ServiceHistorial implements HistorialServiceInterface{
 
     //Comprobaciones de historial con compra, menos de 30 dias desde la compra y clienteExist
     @Override
-    public Optional<Historial> devolver_producto(String nickname, DevolucionProductoDTO devolucionProductoDTO) {
+    public Optional<Historial> devolver_producto(String nickname, DevolucionProductoDTO devolucionProductoDTO) throws CustomException {
 
         Optional<Cliente> clienteExist = repositoryCliente.getClienteByNickname(nickname);
 
@@ -195,32 +224,32 @@ public class ServiceHistorial implements HistorialServiceInterface{
 
                         } else {
 
-                            return Optional.empty();
+                            throw new CustomException("La cantidad del historial es " + historialExist.get().getCantidad() + " y la que quiere devolver es " + devolucionProductoDTO.getCantidad() + " debe coincidir o ser menor a la cantidad que se compró");
 
                         }
 
                     } else {
 
-                        return Optional.empty();
+                        throw new CustomException("La fecha de compra tiene como límite 30 días, no se puede devolver, fecha de compra: " + historialExist.get().getFechaCompra());
 
                     }
 
 
                 } else {
 
-                    return Optional.empty();
+                    throw new CustomException("No existe un historial de compra del cliente " + nickname + " con el producto " + devolucionProductoDTO.getNombre() + " que sea de tipo compra");
 
                 }
 
             } else {
 
-                return Optional.empty();
+                throw new CustomException("El producto " + devolucionProductoDTO.getNombre() + " no existe");
 
             }
 
         } else {
 
-            return Optional.empty();
+            throw new CustomException("El cliente " + nickname + " no existe");
 
         }
     }
