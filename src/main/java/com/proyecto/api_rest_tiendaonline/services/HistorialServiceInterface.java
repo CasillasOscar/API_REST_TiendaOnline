@@ -22,7 +22,7 @@ public interface HistorialServiceInterface {
     //Se puede hacer por producto, con fecha
     //Se puede hacer por producto, con tipo
 
-    Optional<List<Historial>> getByFecha(LocalDate date) throws CustomException;
+    Optional<List<Historial>> getByFecha(String date) throws CustomException;
 
     Optional<List<Historial>> getByTipo(String tipo) throws CustomException;
 

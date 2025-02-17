@@ -3,9 +3,11 @@ package com.proyecto.api_rest_tiendaonline.services;
 import com.proyecto.api_rest_tiendaonline.exceptions.CustomException;
 import com.proyecto.api_rest_tiendaonline.modelos.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import javax.swing.text.html.Option;
+import java.time.DateTimeException;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
@@ -81,20 +83,48 @@ public class ServiceHistorial implements HistorialServiceInterface{
     }
 
     @Override
-    public Optional<List<Historial>> getByFecha(LocalDate date) throws CustomException {
+    public Optional<List<Historial>> getByFecha(String date) throws CustomException {
 
-        Optional<List<Historial>> list = repositoryHistorial.getHistorialsByFechaCompra(date);
+        String arrayDate[] = date.split("-");
 
-        if(!list.get().isEmpty()){
+        if(arrayDate.length == 3){
 
-            return Optional.of(list.get());
+            try {
 
+                Optional<LocalDate> dateOK = Optional.of(LocalDate.of(Integer.parseInt(arrayDate[2]), Integer.parseInt(arrayDate[1]), Integer.parseInt(arrayDate[0])));
+
+                if (dateOK.isPresent() && dateOK.get() instanceof LocalDate) {
+
+                    Optional<List<Historial>> list = repositoryHistorial.getHistorialsByFechaCompra(dateOK.get());
+
+                    if (!list.get().isEmpty()) {
+
+                        return Optional.of(list.get());
+
+                    } else {
+
+                        throw new CustomException("No existe historial para la fecha " + date);
+
+                    }
+
+                } else {
+
+                    throw new CustomException("Formato de fecha incorrecto: dd-MM-YYY");
+
+                }
+
+            }   catch(NumberFormatException e){
+
+                throw new CustomException("Formato de fecha incorrecto: dd-MM-YYY");
+
+            }   catch(DateTimeException e){
+
+                throw new CustomException("Formato de fecha incorrecto: dias maximo 31 y meses 12");
+            }
         } else {
 
-            throw new CustomException("No existe historial para la fecha " + date);
-
+            throw new CustomException("Formato de fecha incorrecto: dd-MM-YYY");
         }
-
     }
 
     @Override

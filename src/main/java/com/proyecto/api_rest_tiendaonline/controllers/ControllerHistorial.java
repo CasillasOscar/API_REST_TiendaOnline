@@ -48,49 +48,7 @@ public class ControllerHistorial {
     @GetMapping("/fecha/{date}")
     public ResponseEntity<?> getByFecha(@PathVariable String date) throws CustomException{
 
-        String arrayDate[] = date.split("-");
-
-        if(arrayDate.length == 3){
-
-            try{
-
-                Optional<LocalDate> dateOK = Optional.of(LocalDate.of(Integer.parseInt(arrayDate[2]), Integer.parseInt(arrayDate[1]), Integer.parseInt(arrayDate[0])));
-
-                if(dateOK.isPresent() && dateOK.get() instanceof LocalDate){
-
-                    Optional<List<Historial>> list = serviceHistorial.getByFecha(dateOK.get());
-
-                    if(list.isPresent()){
-
-                        return ResponseEntity.ok(list);
-
-                    } else {
-
-                        return ResponseEntity.badRequest().body("No se ha podido sacar el historial de la fecha " + date);
-
-                    }
-                } else {
-
-                    return ResponseEntity.badRequest().body("Formato incorrecto de fecha: dd-MM-YYYY");
-                }
-
-            } catch (NumberFormatException e) {
-
-                return ResponseEntity.badRequest().body("Formato de fecha incorrecto: dd--MM--YYYY");
-
-            } catch (DateTimeException e) {
-
-                return ResponseEntity.badRequest().body("Formato de fecha incorrecto: dias maximo 31 y meses 12");
-
-            }
-
-        } else {
-
-            return ResponseEntity.badRequest().body("Formato incorrecto de fecha: dd-MM-YYYY");
-
-        }
-
-
+            return ResponseEntity.ok(serviceHistorial.getByFecha(date));
     }
 
     @GetMapping("/tipo/{tipo}")
