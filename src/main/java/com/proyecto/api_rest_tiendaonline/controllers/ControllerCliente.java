@@ -1,5 +1,6 @@
 package com.proyecto.api_rest_tiendaonline.controllers;
 
+import com.proyecto.api_rest_tiendaonline.exceptions.CustomException;
 import com.proyecto.api_rest_tiendaonline.modelos.Cliente;
 import com.proyecto.api_rest_tiendaonline.modelos.UsuarioLogDTO;
 import com.proyecto.api_rest_tiendaonline.services.ServiceCliente;
@@ -11,7 +12,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/cliente")
@@ -34,53 +34,24 @@ public class ControllerCliente {
 
     @GetMapping("/{id}")
     @Cacheable
-    public ResponseEntity<?> getUsuarioByid(@PathVariable Integer id) {
+    public ResponseEntity<?> getUsuarioByid(@PathVariable Integer id) throws CustomException {
 
-        Optional<Cliente> clienteExist = serviceCliente.getClienteById(id);
-
-        if (clienteExist.isPresent()) {
-
-            return ResponseEntity.ok(clienteExist);
-
-        } else {
-
-            return ResponseEntity.badRequest().body("No se ha encontrado un cliente con dicho id");
-        }
-
+            return ResponseEntity.ok(serviceCliente.getClienteById(id));
     }
 
     @GetMapping("/nickname/{nickname}")
     @Cacheable
-    public ResponseEntity<?> getUsuarioByNickname(@PathVariable String nickname) {
+    public ResponseEntity<?> getUsuarioByNickname(@PathVariable String nickname) throws CustomException {
 
-        Optional<Cliente> clienteExist = serviceCliente.getClienteByNickname(nickname);
-
-        if (clienteExist.isPresent()) {
-
-            return ResponseEntity.ok(clienteExist);
-
-        } else {
-
-            return ResponseEntity.badRequest().body("No se ha encontrado un cliente con dicho nickname");
-        }
-
+            return ResponseEntity.ok(serviceCliente.getClienteByNickname(nickname));
     }
 
     @PostMapping("/login/{nickname}")
-    public ResponseEntity<?> LoginByNicknameAndPassword(@PathVariable String nickname,@Valid @RequestBody Cliente user) {
+    public ResponseEntity<?> LoginByNicknameAndPassword(@PathVariable String nickname, @RequestBody Cliente user) throws CustomException {
 
         if(nickname.contentEquals(user.getNickname())){
 
-            Optional<Cliente> clienteExist = serviceCliente.LoginByNicknameAndPassword(user);
-
-            if (clienteExist.isPresent()) {
-
-                return ResponseEntity.ok(clienteExist);
-
-            } else {
-
-                return ResponseEntity.badRequest().body("No existe dicho nickname y password");
-            }
+                return ResponseEntity.ok(serviceCliente.LoginByNicknameAndPassword(user));
 
         } else {
 
@@ -90,38 +61,19 @@ public class ControllerCliente {
     }
 
     @PostMapping
-    public ResponseEntity<?> addCliente(@Valid @RequestBody Cliente cliente) {
+    public ResponseEntity<?> addCliente(@Valid @RequestBody Cliente cliente) throws CustomException {
 
-        Optional<Cliente> clienteExist = serviceCliente.addCliente(cliente);
+            return ResponseEntity.ok(serviceCliente.addCliente(cliente));
 
-
-        if (clienteExist.isPresent()) {
-
-            return ResponseEntity.ok(clienteExist);
-
-        } else {
-
-            return ResponseEntity.badRequest().body("No se ha creado el cliente");
-        }
 
     }
 
     @PutMapping("/{nickname}")
-    public ResponseEntity<?> updateCliente(@Valid @RequestBody Cliente cliente, @PathVariable String nickname) {
+    public ResponseEntity<?> updateCliente(@Valid @RequestBody Cliente cliente, @PathVariable String nickname) throws CustomException{
 
         if(nickname.contentEquals(cliente.getNickname())){
 
-            Optional<Cliente> clienteExist = serviceCliente.updateCliente(cliente);
-
-
-            if (clienteExist.isPresent()) {
-
-                return ResponseEntity.ok(clienteExist);
-
-            } else {
-
-                return ResponseEntity.badRequest().body("No se ha actualizado el cliente");
-            }
+                return ResponseEntity.ok(serviceCliente.updateCliente(cliente));
 
         } else {
 
@@ -133,7 +85,7 @@ public class ControllerCliente {
 
     @Transactional
     @DeleteMapping("/{nickname}")
-    public ResponseEntity<?> deleteClienteByNicknameAndPassword(@RequestBody UsuarioLogDTO userDTO, @PathVariable String nickname){
+    public ResponseEntity<?> deleteClienteByNicknameAndPassword(@RequestBody UsuarioLogDTO userDTO, @PathVariable String nickname) throws CustomException{
 
         if(nickname.contentEquals(userDTO.getNickname())){
 
@@ -145,8 +97,7 @@ public class ControllerCliente {
                 return ResponseEntity.ok("El usuario " + nickname + " ha sido eliminado");
 
             } else {
-
-                return ResponseEntity.badRequest().body("No se ha eliminado el usuario");
+                return ResponseEntity.ok("El usuario " + nickname + " no ha sido eliminado");
             }
 
         } else {

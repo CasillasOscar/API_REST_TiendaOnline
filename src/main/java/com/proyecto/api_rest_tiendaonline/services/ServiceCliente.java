@@ -1,5 +1,6 @@
 package com.proyecto.api_rest_tiendaonline.services;
 
+import com.proyecto.api_rest_tiendaonline.exceptions.CustomException;
 import com.proyecto.api_rest_tiendaonline.modelos.Cliente;
 import com.proyecto.api_rest_tiendaonline.modelos.RepositoryCliente;
 import com.proyecto.api_rest_tiendaonline.modelos.UsuarioLogDTO;
@@ -27,39 +28,42 @@ public class ServiceCliente implements ClienteServiceInterface{
     }
 
     @Override
-    public Optional<Cliente> getClienteById(Integer id) {
+    public Optional<Cliente> getClienteById(Integer id) throws CustomException {
 
-        try{
+            Optional<Cliente> clienteExist = repositoryCliente.getClienteById(id);
 
-            return repositoryCliente.getClienteById(id);
+            if(clienteExist.isPresent()){
 
-        } catch (NoSuchElementException e) {
+                return clienteExist;
 
-            return Optional.empty();
+            } else {
 
-        }
+                throw new CustomException("No existe el cliente con id " + id);
+            }
+
+
 
     }
 
     //GET by nickname
     @Override
-    public Optional<Cliente> getClienteByNickname(String nickname) {
+    public Optional<Cliente> getClienteByNickname(String nickname) throws CustomException{
 
-        try{
+        Optional<Cliente> clienteExist = repositoryCliente.getClienteByNickname(nickname);
 
-            return repositoryCliente.getClienteByNickname(nickname);
+        if(clienteExist.isPresent()){
 
-        } catch (NoSuchElementException e) {
+            return clienteExist;
 
-            return Optional.empty();
+        } else {
 
+            throw new CustomException("No existe el cliente con nickname " + nickname);
         }
     }
 
     //Login for nickname and password
     @Override
-    public Optional<Cliente> LoginByNicknameAndPassword(Cliente user) {
-        try{
+    public Optional<Cliente> LoginByNicknameAndPassword(Cliente user) throws CustomException{
 
             Optional<Cliente> clienteExist = repositoryCliente.getClienteByNickname(user.getNickname());
 
@@ -73,26 +77,22 @@ public class ServiceCliente implements ClienteServiceInterface{
 
                 } else {
 
-                    return Optional.empty();
+                    throw new CustomException("La contraseña de " + user.getNickname() + " no es correcta");
 
                 }
 
             } else {
 
-               return Optional.empty();
+               throw new CustomException("El nickname " + user.getNickname() + " no existe");
 
             }
-        } catch (NoSuchElementException e) {
 
-            return Optional.empty();
-
-        }
 
     }
 
     // Add cliente => Comprueba si el nickname ya existe puesto que campo único
     @Override
-    public Optional<Cliente> addCliente(Cliente cliente) {
+    public Optional<Cliente> addCliente(Cliente cliente) throws CustomException {
 
        Optional<Cliente> clienteExist = repositoryCliente.getClienteByNickname(cliente.getNickname());
 
@@ -103,16 +103,16 @@ public class ServiceCliente implements ClienteServiceInterface{
 
        } else {
 
-           return Optional.empty();
+           throw new CustomException("El nickname " + cliente.getNickname() + " ya existe en la base de datos.");
 
        }
     }
 
     //Update de cliente => Únicamente puede cambiar la contraseña, teléfono o domicilio
     @Override
-    public Optional<Cliente> updateCliente(Cliente cliente) {
+    public Optional<Cliente> updateCliente(Cliente cliente) throws CustomException{
 
-        try{
+
 
             Optional<Cliente> clienteExist = repositoryCliente.getClienteByNickname(cliente.getNickname());
 
@@ -126,23 +126,17 @@ public class ServiceCliente implements ClienteServiceInterface{
 
             } else {
 
-                return Optional.empty();
+                throw new CustomException("El cliente con nickname " + cliente.getNickname() + " no existe.");
 
             }
 
-        } catch (NoSuchElementException e) {
 
-            return Optional.empty();
-
-        }
 
     }
 
 
     @Override
-    public Boolean deleteClienteByNicknameAndPassword(UsuarioLogDTO user) {
-
-        try{
+    public Boolean deleteClienteByNicknameAndPassword(UsuarioLogDTO user) throws CustomException {
 
             Optional<Cliente> clienteExist = repositoryCliente.getClienteByNickname(user.getNickname());
 
@@ -157,19 +151,15 @@ public class ServiceCliente implements ClienteServiceInterface{
 
                 } else {
 
-                    return false;
+                    throw new CustomException("La contraseña de " + user.getNickname() + " no es correcta");
 
                 }
 
             } else {
 
-                return false;
+                throw new CustomException("El cliente con nickname " + user.getNickname() + " no existe.");
 
             }
-        } catch (NoSuchElementException e) {
 
-            return false;
-
-        }
     }
 }

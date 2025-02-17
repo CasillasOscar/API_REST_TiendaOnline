@@ -1,5 +1,6 @@
 package com.proyecto.api_rest_tiendaonline.services;
 
+import com.proyecto.api_rest_tiendaonline.exceptions.CustomException;
 import com.proyecto.api_rest_tiendaonline.modelos.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -97,7 +98,7 @@ public class ServiceHistorial implements HistorialServiceInterface{
 
     //Comprobaciones de stock y clienteExist
     @Override
-    public Optional<Historial> comprar_producto(String nickname, CompraProductoDTO compraProductoDTO) {
+    public Optional<Historial> comprar_producto(String nickname, CompraProductoDTO compraProductoDTO) throws CustomException {
 
         Optional<Cliente> clienteExist = repositoryCliente.getClienteByNickname(nickname);
 
@@ -123,22 +124,23 @@ public class ServiceHistorial implements HistorialServiceInterface{
                     repositoryHistorial.save(newHistorial);
 
                     return Optional.of(newHistorial);
+
                 } else {
 
-                    //Menos stock que el pedido
-                    return Optional.empty();
+                    throw new CustomException("No hay stock suficiente");
 
                 }
 
             } else {
 
-                return Optional.empty();
+                throw new CustomException("El producto no existe");
 
             }
 
         } else {
 
-            return Optional.empty();
+            throw new CustomException("El cliente no existe");
+
         }
 
     }

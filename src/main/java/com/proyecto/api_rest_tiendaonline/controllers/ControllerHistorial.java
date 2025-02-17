@@ -1,5 +1,7 @@
 package com.proyecto.api_rest_tiendaonline.controllers;
 
+import com.fasterxml.jackson.core.JsonEncoding;
+import com.proyecto.api_rest_tiendaonline.exceptions.CustomException;
 import com.proyecto.api_rest_tiendaonline.modelos.CompraProductoDTO;
 import com.proyecto.api_rest_tiendaonline.modelos.DevolucionProductoDTO;
 import com.proyecto.api_rest_tiendaonline.modelos.Historial;
@@ -11,7 +13,9 @@ import org.springframework.web.bind.annotation.*;
 
 import java.time.DateTimeException;
 import java.time.LocalDate;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @RestController
@@ -130,18 +134,9 @@ public class ControllerHistorial {
 
 
     @PostMapping("/comprar/{nickname}")
-    public ResponseEntity<?> comprar_producto(@PathVariable String nickname, @RequestBody CompraProductoDTO compraProductoDTO){
+    public ResponseEntity<?> comprar_producto(@PathVariable String nickname, @RequestBody CompraProductoDTO compraProductoDTO) throws CustomException {
+            return ResponseEntity.of(serviceHistorial.comprar_producto(nickname, compraProductoDTO));
 
-        Optional<Historial> newHistorial = serviceHistorial.comprar_producto(nickname, compraProductoDTO);
-
-        if(newHistorial.isPresent()){
-
-            return ResponseEntity.of(newHistorial);
-
-        } else {
-
-            return ResponseEntity.badRequest().body("No se ha podido comprar el producto");
-        }
     }
 
     @PostMapping("/devolucion/{nickname}")

@@ -1,5 +1,6 @@
 package com.proyecto.api_rest_tiendaonline.services;
 
+import com.proyecto.api_rest_tiendaonline.exceptions.CustomException;
 import com.proyecto.api_rest_tiendaonline.modelos.CompraProductoDTO;
 import com.proyecto.api_rest_tiendaonline.modelos.DevolucionProductoDTO;
 import com.proyecto.api_rest_tiendaonline.modelos.Historial;
@@ -27,7 +28,7 @@ public interface HistorialServiceInterface {
     Optional<List<Historial>> getByTipo(String tipo);
 
 
-    Optional<Historial> comprar_producto(String nickname, CompraProductoDTO compraProductoDTO);
+    Optional<Historial> comprar_producto(String nickname, CompraProductoDTO compraProductoDTO) throws CustomException;
     Optional<Historial> devolver_producto(String nickname, DevolucionProductoDTO devolucionProductoDTO);
 
 }

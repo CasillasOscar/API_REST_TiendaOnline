@@ -1,5 +1,6 @@
 package com.proyecto.api_rest_tiendaonline.controllers;
 
+import com.proyecto.api_rest_tiendaonline.exceptions.CustomException;
 import jakarta.validation.ConstraintViolationException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
@@ -49,6 +50,14 @@ public class GlobalExceptionHandler {
         error.put("error", "Tipo de dato inválido para el parámetro: " + ex.getName());
         error.put("valor", ex.getValue() != null ? ex.getValue().toString() : null);
         error.put("tipoEsperado", ex.getRequiredType().getSimpleName());
+        return ResponseEntity.badRequest().body(error);
+    }
+
+    @ExceptionHandler(CustomException.class)
+    public ResponseEntity<Map<String, String>> handleCustomException(CustomException msg){
+        Map<String, String> error = new HashMap<>();
+        error.put("error", msg.getMessage());
+
         return ResponseEntity.badRequest().body(error);
     }
 
